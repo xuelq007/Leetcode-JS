@@ -1,0 +1,53 @@
+<script>
+
+
+/*
+
+ Longest Increasing Subsequence
+
+leetcode: https://leetcode-cn.com/problems/longest-increasing-subsequence/
+
+给定一个无序的整数数组，找到其中最长上升子序列的长度。
+
+示例:
+
+输入: [10,9,2,5,3,7,101,18]
+输出: 4
+解释: 最长的上升子序列是 [2,3,7,101]，它的长度是 4。
+
+思路帖：https://blog.csdn.net/lxt_Lucia/article/details/81206439
+
+状态方程：
+
+dp[i] 代表数组以nums[i]结尾的最长上升子序列长度，因此边界条件dp[0] = 1;
+
+dp[i]=max(dp[j])+1,∀0≤j<i，nums[j] < nums[i]
+
+LIS =max(dp[i]),∀0≤i<n
+ */
+
+function lengthOfLIS(nums) {
+
+    let dp = new Array(nums.length);
+    dp[0] = 1;
+
+    for (let i = 1; i < dp.length; i++) {  // 为所有dp赋值
+        let max = 1;
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                max = Math.max(dp[j] + 1, max);
+            }
+        }
+        dp[i] = max;
+    }
+
+    return Math.max(...dp);
+
+}
+
+let nums = [10,9,2,5,3,7,101,18];
+
+console.log(lengthOfLIS(nums));
+
+
+</script>

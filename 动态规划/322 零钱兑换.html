@@ -1,0 +1,82 @@
+<script>
+
+
+/*
+
+322. Coin Change
+
+leetcode: https://leetcode-cn.com/problems/coin-change/
+
+给定不同面额的硬币 coins 和一个总金额 amount。编写一个函数来计算可以凑成总金额所需的最少的硬币个数。如果没有任何一种硬币组合能组成总金额，返回 -1。
+
+示例 1:
+
+输入: coins = [1, 2, 5], amount = 11
+输出: 3
+解释: 11 = 5 + 5 + 1
+示例 2:
+
+输入: coins = [2], amount = 3
+输出: -1
+
+说明:
+你可以认为每种硬币的数量是无限的。
+
+思路：
+
+除了第 1 步这个看似基本的公理外，其他往后的结果都是建立在它之前得到的某一步的最优解上，加上 1 个硬币得到。得出：
+
+d(i) = d(j) + 1
+
+这里 j < i。通俗地讲，我们需要凑出 i 元，就在凑出 j 的结果上再加上某一个硬币就行了。
+
+那这里我们加上的是哪个硬币呢。嗯，其实很简单，把每个硬币试一下就行了：
+
+假设最后加上的是 1 元硬币，那 d(i) = d(j) + 1 = d(i - 1) + 1。
+假设最后加上的是 2 元硬币，那 d(i) = d(j) + 1 = d(i - 2) + 1。
+假设最后加上的是 5 元硬币，那 d(i) = d(j) + 1 = d(i - 5) + 1。
+我们分别计算出 d(i - 1) + 1，d(i - 2) + 1，d(i - 5) + 1 的值，取其中的最小值，即为最优解，也就是 d(i)。
+
+
+状态方程：
+
+dp[i] 代表总金额为i所需硬币的最小总数.
+
+dp[i] = min(dp[i-cv] + 1). (cv in coins, i - cv >=0)
+
+ */
+
+function coinChange(coins, amount) {
+
+    if (coins.length < 1 || amount < 0) {
+        return -1;
+    }
+
+    if (amount  === 0) {
+        return 0;
+    }
+
+    let dp = new Array(amount + 1);
+    dp[0] = -1;
+
+    for (let i = 1; i <= amount; i++) {
+        let min = -1;
+        for (let j = 0; j < coins.length; j++) {
+            let coin = coins[j];
+            dp[coin] = 1;
+            if (i - coin > 0 && dp[i - coin] > 0) {
+                min = min === -1 ? dp[i - coin] + 1 : Math.min(dp[i - coin] + 1, min);
+            }
+        }
+        dp[i] = dp[i] ? dp[i] : min;
+    }
+
+    return dp[amount];
+}
+
+console.log(coinChange([1, 2, 5], 11));
+console.log(coinChange([1, 2, 5, 7], 12));
+console.log(coinChange([2], 3));
+
+
+</script>

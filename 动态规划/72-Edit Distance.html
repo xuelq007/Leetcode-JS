@@ -1,0 +1,94 @@
+<script>
+
+
+/*
+
+leetcode: https://leetcode-cn.com/problems/edit-distance/
+
+描述：
+
+给定两个单词 word1 和 word2，计算出将 word1 转换成 word2 所使用的最少操作数 。
+
+你可以对一个单词进行如下三种操作：
+
+插入一个字符
+删除一个字符
+替换一个字符
+
+思路帖：https://blog.csdn.net/HappyRocking/article/details/86491042
+
+自顶向下推导状态方程，自底向上(构建二维矩阵)计算结果。
+
+D(i,j) 代表长度为i的字符串变换为长度为j的字符串所需的最少步骤数。
+
+分析D(i,j)所有可能的前一步：
+
+假设我们知道D(i-1, j)的值，即长度为i-1的字符串word1变换为长度为j的字符串word2所需的最小步骤，
+此时如果将word1字符串增加1，将问题变换为长度为i的字符串word1变换为长度为j的字符串word2所需的最小步骤，即对于word1来说只需删除word(j)。
+此时D(i,j)=D(i-1,j)+1;
+
+假设我们知道D(i, j-1)的值，即长度为i的字符串word1变换为长度为j-1的字符串word2所需的最小步骤，
+此时如果将word2字符串增加1，将问题变换为长度为i的字符串word1变换为长度为j的字符串word2所需的最小步骤，即对于word1来说只增加一个与word(j)相同的字符。
+此时 D(i,j)=D(i, j-1)+1
+
+假设我们知道D(i-1, j-1)的值，即长度为i-1的字符串word1变换为长度为j-1的字符串word2所需的最小步骤，
+此时如果将word1的字符串增加1, word2字符串增加1，将问题变换为长度为i的字符串word1变换为长度为j的字符串word2所需的最小步骤，此时，
+    如果word(i) = word(j)，那么D(i,j) = D(i-1, j-1)
+    如果word(i) != word(j)，那么对于word1来说需要做一次替换，即将word(i) 替换为word(j),D(i, j) = D(i-1, j-1)+1;
+
+状态方程：
+
+offset = {
+  0: word(i) === word(j)
+  1: else
+}
+
+D(i, j) = min({
+  D(i-1,j) + 1, // 删除
+  D(i, j-1) + 1, // 增加
+  D(i-1,j-1) + offset // 替换或不变
+})
+
+D(i, 0) = i;   // 长度为i的字符串变为长度为0的字符串，最小步数显然为i
+D(0, j) = j;   // 长度为0的字符串变为长度为j的字符串，最小步数显然为j
+
+
+ */
+function getMinSteps(word1, word2) {
+
+  let len1 = word1.length + 1;
+  let len2 = word2.length + 1;
+  let matrix = new Array(len1);
+
+  for (let i = 0; i < matrix.length; i++) {
+    matrix[i] = new Array(len2);
+  }
+
+  for (let i = 0; i < len1; i++) {
+    matrix[i][0] = i;
+  }
+
+  for (let j = 0; j < len2; j++) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i < len1; i++) {
+    for (let j = 1; j < len2; j++) {
+      let offset = word1.charAt(i - 1) == word2.charAt(j - 1) ? 0 : 1;
+      matrix[i][j] = Math.min(matrix[i-1][j] + 1, matrix[i][j-1] + 1, matrix[i-1][j-1] + offset);
+    }
+  }
+
+  return matrix[len1 - 1][len2 - 1];
+
+}
+
+
+ let word1 = "intention";
+ let word2 = "execution";
+
+
+console.log(getMinSteps(word1, word2)); // 5
+
+
+</script>

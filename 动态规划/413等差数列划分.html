@@ -1,0 +1,64 @@
+<script>
+
+
+/*
+
+413. Arithmetic Slices
+
+leetcode: https://leetcode-cn.com/problems/arithmetic-slices/solution/deng-chai-shu-lie-hua-fen-by-leetcode/
+
+
+示例:
+
+如果一个数列至少有三个元素，并且任意两个相邻元素之差相同，则称该数列为等差数列。
+
+A = [1, 2, 3, 4]
+
+返回: 3, A 中有三个子等差数组: [1, 2, 3], [2, 3, 4] 以及自身 [1, 2, 3, 4]。
+
+思路帖： https://blog.csdn.net/qq_31307013/article/details/80579299
+
+状态方程：
+
+dp[i] 代表以word[i]为边界，且数列中包含word[i]的等差数列个数。
+
+dp[i] = {
+    dp[i-1] + 1 (word[i]-word[i-1] = word[i-1]-word[i-2])
+    0           (word[i]-word[i-1] != word[i-1]-word[i-2])
+}
+
+比如： [1, 3, 5, 7, 9, 15, 20, 25, 28, 29] 中，dp[3] 为 [1,3,5,7]数列中包含7的等差数列个数：[3,5,7], [1,3,5,7]，因此dp[3] = 2
+
+ */
+
+function numberOfArithmeticSlices(nums) {
+
+    if (nums.length < 3) {
+        return 0;
+    }
+
+    let dp = new Array(nums.length);
+    for (let i = 0; i < 2; i ++) {
+        dp[i] = 0;
+    }
+
+    let sum = 0;
+    for (let i = 2; i < nums.length; i++) {
+        if (nums[i] - nums[i-1] === nums[i-1] - nums[i-2]) {
+            dp[i] = dp[i-1] + 1;
+            sum += dp[i];
+        } else {
+            dp[i] = 0;
+        }
+    }
+
+    return sum;
+
+}
+
+let nums = [1, 3, 5, 7, 9, 15, 20, 25, 28, 29];
+
+console.log(numberOfArithmeticSlices(nums));
+
+
+</script>

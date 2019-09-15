@@ -1,0 +1,86 @@
+<script>
+
+
+/*
+
+523. Continuous Subarray Sum
+
+leetcode: https://leetcode-cn.com/problems/continuous-subarray-sum/
+
+给定一个包含非负数的数组和一个目标整数 k，编写一个函数来判断该数组是否含有连续的子数组，其大小至少为 2，总和为 k 的倍数，即总和为 n*k，其中 n 也是一个整数。
+
+示例 1:
+
+输入: [23,2,4,6,7], k = 6
+输出: True
+解释: [2,4] 是一个大小为 2 的子数组，并且和为 6。
+示例 2:
+
+输入: [23,2,6,4,7], k = 6
+输出: True
+解释: [23,2,6,4,7]是大小为 5 的子数组，并且和为 42。
+说明:
+
+数组的长度不会超过10,000。
+你可以认为所有数字总和在 32 位有符号整数范围内。
+
+状态方程：
+
+dp[i][j] 代表数组从[i, j]的子数组中项的总和。
+
+假设有[0, i]子数组中项目和值为 rem，如果有(i, j]子数组中项目和为k的整数倍即n*k，那么有公式 (rem + n *k) % k = rem%k (n >0, i < j)，
+基于此，我们遍历数组构建哈希表，键为[0, i]的子数组中项目和 sumi%k，值为下标i
+如果当[0, j]的子数组和为sumj，而sumj%k的键在哈希表中已存在，则说明(i,j]区间的子数组满足要求
+
+
+ */
+function checkSubarraySum(nums, k) {
+
+    if (nums.length < 2) {
+        return false;
+    }
+
+    k = Math.abs(k);
+
+    if (k === 1) return true;
+
+    if (k === 0) {
+        for (let i = 1; i < nums.length; i++) {
+            if (nums[i] === 0 && nums[i-1] === 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // key: nums%k, value: 数组下标
+    let map = {
+        0: -1   // [1, 4], 5 的情况
+    }
+    let sum = 0;
+    for (let i = 0; i < nums.length; i++) {
+        sum = sum + nums[i];
+        if (map[sum%k] !== undefined) { // sum值为0也是合法的
+            let index = map[sum%k];
+            if (i - index  > 1) {
+                // console.log(nums.slice(index + 1, i + 1));
+                return true;
+            }
+        } else {
+            map[sum%k] = i;
+        }
+    }
+
+    return false;
+}
+
+console.log(checkSubarraySum([1, 2, 12, 6], 6)); // true
+
+console.log(checkSubarraySum([23,2,4,6,7], 6)); // true
+
+console.log(checkSubarraySum([5, 0, 0], 0)); // true
+
+console.log(checkSubarraySum([1, 4], 5)); // true
+
+
+</script>

@@ -1,0 +1,87 @@
+<script>
+
+
+/*
+
+Maximum Length of Repeated Subarray
+
+leetcode: https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/
+
+描述：
+
+输入:
+A: [1,2,3,2,1]
+B: [3,2,1,4,7]
+输出: 3
+长度最长的公共子数组是 [3, 2, 1]。
+
+思路帖：https://blog.csdn.net/weixin_43510131/article/details/84315049
+
+自顶向下推导状态方程，自底向上(构建二维矩阵)计算结果。
+
+
+状态方程：
+
+DP[i][j]矩阵表示以A[i-1]和B[j-1]为结尾元素的公共子数组的长度
+
+dp[i][0] = 0
+dp[0][j] = 0
+
+当新增加的元素使两个子数组结尾元素相同时，DP[i][j]=DP[i-1][j-1]。
+当新增加的元素使两个子数组结尾元素不同时，因为不可能存在结尾不同的公共子数组，所以DP[i][j]=0
+
+dp[i][j] = {
+    dp[i-1][j-1] + 1   : word(i) = word(j)
+    0                  : word(i) != word(j)
+}
+
+ */
+function findLength(word1, word2) {
+
+    let len1 = word1.length + 1;
+    let len2 = word2.length + 1;
+
+    let matrix = new Array(len1);
+
+    for (let i = 0; i < matrix.length; i++) {
+        matrix[i] = new Array(len2);
+    }
+
+    for (let i = 0; i < len1; i++) {
+        matrix[i][0] = 0;
+    }
+
+    for (let j = 0; j < len2; j++) {
+        matrix[0][j] = 0;
+    }
+
+    let max = 0;
+    for (let i = 1; i < len1; i++) {
+        for (let j = 1; j < len2; j++) {
+            if (word1[i - 1] === word2[j-1]) {
+                matrix[i][j] = matrix[i-1][j-1] + 1;
+                max = matrix[i][j] > max ? matrix[i][j] : max;
+            } else {
+                matrix[i][j] = 0;
+            }
+        }
+    }
+
+    // 打印结果
+    matrix.forEach(row => console.log(row));
+
+    return max;
+
+}
+
+// let word1 = [0,1,1,1,1];
+// let word2 = [1,0,1,0,1];
+
+
+let word1 = [1,2,3,2,1];
+let word2 = [3,2,1,4,7];
+
+console.log(findLength(word1, word2));
+
+
+</script>

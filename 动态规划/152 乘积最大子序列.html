@@ -1,0 +1,56 @@
+<script>
+
+/*
+
+152. Maximum Product Subarray
+
+leetcode: https://leetcode-cn.com/problems/maximum-product-subarray/
+
+给定一个整数数组 nums ，找出一个序列中乘积最大的连续子序列（该序列至少包含一个数）。
+
+示例 1:
+
+输入: [2,3,-2,4]
+输出: 6
+解释: 子数组 [2,3] 有最大乘积 6。
+示例 2:
+
+输入: [-2,0,-1]
+输出: 0
+解释: 结果不能为 2, 因为 [-2,-1] 不是子数组。
+
+状态方程:
+
+imax = max (imax * nums[i], nums[i])
+
+ */
+function maxProduct(nums) {
+    // 如果遍历时遇到负数，则子数组乘积的上升效果被打破，之后重新进行累积，因此需要一个变量存储负数之前的最大值
+    let max = nums[0];
+
+    let imax = nums[0];
+    let imin = nums[0];
+
+    for (let i = 1; i < nums.length; i++) {
+        // 遍历时遇到负数，最大最小值交换 (因为乘以负值会使最大值最小值倒置)
+        if (nums[i] < 0) {
+            let temp = imax;
+            imax = imin;
+            imin = temp;
+        }
+        imax = Math.max(imax * nums[i], nums[i]);
+        imin = Math.min(imin*nums[i], nums[i]);
+        max = Math.max(max, imax);
+        // console.log('max: ' + max, 'imax: ' + imax, 'imin: ' + imin);
+    }
+
+    return max;
+}
+
+console.log(maxProduct([-2,0,-1])); // 0
+console.log(maxProduct([2,3,-2,4])); // 6
+console.log(maxProduct([-2])); // -2
+console.log(maxProduct([-1,-2,-9,-6])); // 108
+console.log(maxProduct([7,-2,-4])); // 56
+
+</script>

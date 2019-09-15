@@ -1,0 +1,84 @@
+<script>
+
+
+/*
+
+Longest Common Subsequence
+子序列则只需保持相对顺序一致，并不要求连续
+
+leetcode:
+
+描述：
+
+输入:
+A: [A, B, C, B, D, A, B]
+B: [B, D, C, A, B, A]
+输出: 4  (BCBA)
+
+思路帖：https://blog.csdn.net/u012426298/article/details/82796660
+
+自顶向下推导状态方程，自底向上(构建二维矩阵)计算结果。
+
+
+状态方程：
+
+dp[i][0] = 0
+dp[0][j] = 0
+
+dp[i][j] = {
+    d[i-1][j-1] + 1                        : word(i) = word(j)
+    max(dp[i-1][j], dp[i][j-1])            : word(i) != word(j)
+}
+
+ */
+function findLength(word1, word2) {
+
+    let len1 = word1.length + 1;
+    let len2 = word2.length + 1;
+
+    let matrix = new Array(len1);
+
+    for (let i = 0; i < matrix.length; i++) {
+        matrix[i] = new Array(len2);
+    }
+
+    for (let i = 0; i < len1; i++) {
+        matrix[i][0] = 0;
+    }
+
+    for (let j = 0; j < len2; j++) {
+        matrix[0][j] = 0;
+    }
+
+    for (let i = 1; i < len1; i++) {
+        for (let j = 1; j < len2; j++) {
+            // matrix[i][j] 代表word1从第1至第i个字符组成的字符串与word2从第1至第j个字符串的最长公共子序列
+            // word1第i个字符即为 word1(i-1), word2第j个字符即为word2(j-1)
+            if (word1[i - 1] === word2[j - 1]) {
+                matrix[i][j] = matrix[i-1][j-1] + 1;
+            } else {
+                matrix[i][j] = Math.max(matrix[i-1][j], matrix[i][j-1]);
+            }
+        }
+    }
+
+    // 打印矩阵
+    matrix.forEach(row => console.log(row));
+
+    return matrix[len1-1][len2-1];
+
+}
+
+
+function printLCS(matrix) {
+
+}
+
+
+let word1 = ['A', 'B', 'C', 'B', 'D', 'A', 'B'];
+let word2 = ['B', 'D', 'C', 'A', 'B', 'A'];
+
+console.log(findLength(word1, word2));
+
+
+</script>
